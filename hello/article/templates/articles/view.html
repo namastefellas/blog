@@ -27,7 +27,7 @@
     <p>Tags: {% for tag in article.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     {% if user.is_authenticated %}
     {% if request.user in article.likes.all %}
-    <h6>Likes : <BUTTON onclick="DisLike(event)">DisLike</BUTTON></h6>
+    <h6>Likes : <BUTTON onclick=Unlike(event)">Unlike</BUTTON></h6>
     {% else %}
     <h6>Likes : <BUTTON onclick="Like(event)">Like</BUTTON></h6>
     {% endif %}
@@ -51,7 +51,7 @@
     {% endfor %}
 
 <script>
-        async function Like(event) {
+        async function like(event) {
         event.preventDefault()
         let base_url = '{% url "article:like_add" article.id  %}'
         let response = await fetch(base_url)
@@ -60,12 +60,12 @@
         let tot = document.getElementById('likes')
         tot.innerText = parseInt(tot.innerText) +1
         button.onclick = () => {
-            DisLike(event)
+            unLike(event)
         }
         }
 
 
-        async function DisLike(event) {
+        async function unLike(event) {
          event.preventDefault()
          let base_url = '{% url "article:like_delete" article.id  %}'
          let response = await fetch(base_url)
@@ -74,7 +74,7 @@
          let tot = document.getElementById('likes')
          tot.innerText = parseInt(tot.innerText) -1
         button.onclick = () => {
-            Like(event)
+            like(event)
         }
         }
 
@@ -92,7 +92,7 @@
             let total = document.getElementById(id)
             total.innerText = parseInt(total.innerText) +1
         button.onclick = () => {
-            DisLike1(event)
+            unLikeOne(event)
         }
         }
 
@@ -107,7 +107,7 @@
             let total = document.getElementById(id)
             total.innerText = parseInt(total.innerText) -1
         button.onclick = () => {
-            Like1(event)
+            likeOne(event)
         }
         }
 
