@@ -25,11 +25,93 @@
     <p>Author: {{ article.author }}</p>
     <p>Content: {{ article.content }}</p>
     <p>Tags: {% for tag in article.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    {% if user.is_authenticated %}
+    {% if request.user in article.likes.all %}
+    <h6>Likes : <BUTTON onclick="DisLike(event)">DisLike</BUTTON></h6>
+    {% else %}
+    <h6>Likes : <BUTTON onclick="Like(event)">Like</BUTTON></h6>
+    {% endif %}
+    {% endif %}
+    <p>Кол-во Likes: <p id="likes">{{ article.likes.count }} </p></p>
+
 
     <h2>Comments:</h2>
     {% for comment in article.comments.all %}
         <p>{{ comment.author }}: {{ comment.comment }}</p>
+        {% if user.is_authenticated %}
+        {% if request.user in comment.likes.all %}
+        <BUTTON id="like_comm{{ comment.pk }}" data-counter_id="counter{{ comment.pk }}" data-url="{% url 'article:like_delete_comment' comment.id %}" onclick="unLikeOne(event)">Unlike</BUTTON>
+        {% else %}
+        <BUTTON id="like_comm" data-counter_id="counter{{ comment.pk }}"  data-url="{% url 'article:like_add_comment' comment.id %}" onclick="likeOne(event)">Like</BUTTON>
+        {% endif %}
+        {% endif %}
+        <p>Likes: <span id="counter{{ comment.pk }}">{{ comment.likes.count }}</span></p>
     {% empty %}
         <p>Нет комментариев :(</p>
     {% endfor %}
+
+<script>
+        async function Like(event) {
+        event.preventDefault()
+        let base_url = '{% url "article:like_add" article.id  %}'
+        let response = await fetch(base_url)
+        let button = event.target
+        button.innerText = 'Unlike'
+        let tot = document.getElementById('likes')
+        tot.innerText = parseInt(tot.innerText) +1
+        button.onclick = () => {
+            DisLike(event)
+        }
+        }
+
+
+        async function DisLike(event) {
+         event.preventDefault()
+         let base_url = '{% url "article:like_delete" article.id  %}'
+         let response = await fetch(base_url)
+         let button = event.target
+         button.innerText = 'Like'
+         let tot = document.getElementById('likes')
+         tot.innerText = parseInt(tot.innerText) -1
+        button.onclick = () => {
+            Like(event)
+        }
+        }
+
+</script>
+
+
+<script>
+        async function likeOne(event) {
+        let button = event.target
+        event.preventDefault()
+        let base_url = button.dataset.url
+        let response = await fetch(base_url)
+        let id = button.dataset.counter_id
+        button.innerText = 'Unlike'
+            let total = document.getElementById(id)
+            total.innerText = parseInt(total.innerText) +1
+        button.onclick = () => {
+            DisLike1(event)
+        }
+        }
+
+
+        async function unLikeOne(event) {
+          let button = event.target
+         event.preventDefault()
+         let base_url = button.dataset.url
+         let response = await fetch(base_url)
+         let id = button.dataset.counter_id
+        button.innerText = 'Like'
+            let total = document.getElementById(id)
+            total.innerText = parseInt(total.innerText) -1
+        button.onclick = () => {
+            Like1(event)
+        }
+        }
+
+</script>
+
+
 {% endblock content %}

@@ -105,3 +105,4 @@ class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('article:list')
     permission_required = 'article.delete_article'
 
+    

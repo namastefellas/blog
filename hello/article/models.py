@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
+from django.db.models.deletion import CASCADE
 
 
 class BaseModel(models.Model):
@@ -31,6 +32,11 @@ class Article(BaseModel):
         'article.Tag',
         related_name='articles',
         db_table='article_tags'
+    )
+    likes = models.ManyToManyField(
+        get_user_model(),
+        related_name='likes_art',
+        db_table='likes_article'
     )
 
     class Meta:
@@ -62,6 +68,12 @@ class Comment(BaseModel):
         related_name='comments'
     )
 
+    likes = models.ManyToManyField(
+        get_user_model(),
+        related_name='likes_comm',
+        db_table='likes_comment'
+    )
+
     class Meta:
         db_table = 'comments'
         verbose_name = 'Комментарий'
@@ -81,3 +93,4 @@ class Tag(BaseModel):
     
     def __str__(self):
         return self.tag
+

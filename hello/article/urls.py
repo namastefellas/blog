@@ -12,6 +12,13 @@ from article.views.comments import (
     ArticleCommentCreate
 )
 
+from article.views.likes import (
+    LikeAdd,
+    LikeDelete,
+    LikeDeleteComment,
+    LikeAddComment
+)
+
 
 app_name = 'article'
 
@@ -21,5 +28,9 @@ urlpatterns = [
     path('<int:pk>/', ArticleView.as_view(), name='view'),
     path('<int:pk>/update', ArticleUpdateView.as_view(), name='update'),
     path('<int:pk>/delete', ArticleDeleteView.as_view(), name='delete'),
-    path('<int:pk>/comments/add/', ArticleCommentCreate.as_view(), name='comment-create')
+    path('<int:pk>/comments/add/', ArticleCommentCreate.as_view(), name='comment-create'),
+    path('<int:pk>/like_add/', LikeAdd.as_view(), name='like_add'),
+    path('<int:pk>/like_delete/', LikeDelete.as_view(), name='like_delete'),
+    path('<int:pk>/like_add_comment/', LikeAddComment.as_view(), name='like_add_comment' ),
+    path('<int:pk>/like_delete_comment/', LikeDeleteComment.as_view(), name='like_delete_comment' )
 ]

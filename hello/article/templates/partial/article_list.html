@@ -9,16 +9,21 @@
         <h3><a href="{% url "article:view" article.pk %}">{{ article.title }}</a></h3>
         <p>
             <label for="selected_articles-{{ article.pk }}">Select:</label>
-
             <input type="checkbox" name="selected_articles"
-
                    id="selected_articles-{{ article.pk }}" value="{{ article.pk }}">
         </p>
-
         <p>
             <a href="{% url 'accounts:user-detail' article.author_id %}">{{ article.author }}</a>
             | {{ article.created_at|date:"d.m.Y H:i:s" }}
         </p>
+        {% if user.is_authenticated %}
+        {% if request.user in article.likes.all %}
+        <BUTTON id="like_comm" data-counter_id="counter{{ article.pk }}" data-url="{% url 'article:like_delete' article.id %}" onclick="unLikeOne(event)">Unlike</BUTTON>
+        {% else %}
+        <BUTTON id="like_comm" data-counter_id="counter{{ article.pk }}" data-url="{% url 'article:like_add' article.id %}" onclick="likeOne(event)">Like</BUTTON>
+        {% endif %}
+        {% endif %}
+        <p>Likes: <p id="counter{{ article.pk }}">{{ article.likes.count }}</p></p>
     </div>
 
 {% empty %}
@@ -29,3 +34,35 @@
 {% if is_paginated %}
      {% include 'partial/pagination.html' %}
 {% endif %}
+
+<script>
+    async function likeOne(event) {
+    let button = event.target
+    event.preventDefault()
+    let base_url = button.dataset.url
+    let response = await fetch(base_url)
+    let id = button.dataset.counter_id
+    button.innerText = 'Unlike'
+        let total = document.getElementById(id)
+        total.innerText = parseInt(total.innerText) +1
+    button.onclick = () => {
+        unLikeOne(event)
+    }
+    }
+
+
+    async function unLikeOne(event) {
+      let button = event.target
+     event.preventDefault()
+     let base_url = button.dataset.url
+     let response = await fetch(base_url)
+     let id = button.dataset.counter_id
+    button.innerText = 'Like'
+        let tot = document.getElementById(id)
+        tot.innerText = parseInt(tot.innerText) -1
+    button.onclick = () => {
+        likeOne(event)
+    }
+    }
+
+</script>
