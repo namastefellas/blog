@@ -33,11 +33,6 @@ class Article(BaseModel):
         related_name='articles',
         db_table='article_tags'
     )
-    likes = models.ManyToManyField(
-        get_user_model(),
-        related_name='likes_art',
-        db_table='likes_article'
-    )
 
     class Meta:
         db_table = 'articles'
@@ -66,12 +61,6 @@ class Comment(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         related_name='comments'
-    )
-
-    likes = models.ManyToManyField(
-        get_user_model(),
-        related_name='likes_comm',
-        db_table='likes_comment'
     )
 
     class Meta:
