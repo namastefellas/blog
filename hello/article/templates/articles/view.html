@@ -25,13 +25,6 @@ b{% extends "base.html" %}
     <p>Author: {{ article.author }}</p>
     <p>Content: {{ article.content }}</p>
     <p>Tags: {% for tag in article.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    {% if user.is_authenticated %}
-    {% if request.user in article.likes.all %}
-    <h6>Likes : <button onclick=Unlike(event)">Unlike</button></h6>
-    {% else %}
-    <h6>Likes : <button onclick="Like(event)">Like</button></h6>
-    {% endif %}
-    {% endif %}
 
     <h2>Comments:</h2>
     {% for comment in article.comments.all %}
